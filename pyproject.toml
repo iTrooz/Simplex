@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "tmp2"
+version = "0.1.0"
+description = ""
+authors = ["iTrooz"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+sympy = "^1.12"
+colorama = "^0.4.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
