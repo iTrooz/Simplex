@@ -39,23 +39,12 @@ def auto_str(cls):
     return cls
 
 
+@auto_str
 class FullEquation:
     def __init__(self, coeffs: List[int], sign: Sign, result: int):
         self.coeffs = coeffs
         self.sign = sign
         self.result = result
-
-    def __repr__(self):
-        coeffsStr = ""
-        for i, coeff in enumerate(self.coeffs):
-            if coeff == 0: continue
-            elif coeff == 1:
-                coeffsStr += f"x{i+1} + "
-            else:
-                coeffsStr += f"{coeff}*x{i+1} + "
-
-
-        return f"({coeffsStr[:-3]} {self.sign} {self.result})"
 
 @auto_str
 class Variable:
