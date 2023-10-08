@@ -212,11 +212,12 @@ class Simplex:
         pivot_equation_n = self.pivot_coords[0]
         pivot_equation = self.equations[pivot_equation_n]
 
-        # delete exit variable
-        for variable in self.variables:
-            if variable.name == pivot_equation.vb:
-                self.variables.remove(variable)
-                break
+        # delete exit variable if it's a A variable
+        if pivot_equation.vb[0] == "A":
+            for variable in self.variables:
+                if variable.name == pivot_equation.vb:
+                    self.variables.remove(variable)
+                    break
         
         # update equation of exit variable
         pivot_equation.vb = pivot_var.name
