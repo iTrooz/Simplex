@@ -154,7 +154,13 @@ class Simplex:
         variable = self.variables[selected_var_col]
         L = []
         for i, equation in enumerate(self.equations):
-            L.append(equation.value / variable.equ_values[i])
+            try:
+                # Pivot's value should be >0 
+                # Meaning that if variable.equ_values[i] == 0 the value should be ignored because it can't be the pivot 
+                # To ignore the value we assume that it is equal to 0 (but it could be anything between ]-inf, 0])
+                L.append(equation.value / variable.equ_values[i])
+            except ZeroDivisionError:
+                L.append(0)
 
         # get index of smallest value (positive only)
         row_index = L.index(sorted(filter(lambda x: x > 0, L))[0])
