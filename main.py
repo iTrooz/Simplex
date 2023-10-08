@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 from fractions import Fraction
 
 from colorama import Fore
@@ -16,7 +16,7 @@ class Sign:
     GREATER_EQ = ">="
     EQ = "="
 
-def init2DArray(columns, rows, content=None):
+def init2DArray(columns: int, rows: int, content=None):
     arr = []
     for _ in range(rows):
         arr.append([content] * columns)
@@ -59,10 +59,10 @@ class EquationMeta:
 
 @auto_str
 class Simplex:
-    def __init__(self, target: List[int], target_type, full_equations: List[FullEquation]):
-        self.pivot_coords = None
+    def __init__(self, target: List[int], target_type: TargetType, full_equations: List[FullEquation]):
+        self.pivot_coords: Tuple[int] = None
         self.target: List[int] = target
-        self.target_type: TargetType = target_type
+        self.target_type = target_type
 
         # Current variables and their values, including x, A, and S variables. Will be modified with each iteration
         self.variables: List[Variable] = []
@@ -120,7 +120,7 @@ class Simplex:
         for var, cost in zip(self.variables, self.costs):
             self.reduced_costs.append(var.value - cost)
 
-    def find_pivot(self) -> False:
+    def find_pivot(self) -> bool:
         """
         Return false is no pivot could be found, else true
         """
