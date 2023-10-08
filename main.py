@@ -3,6 +3,7 @@ from fractions import Fraction
 
 from colorama import Fore
 from sympy import symbols, Expr
+import tabulate
 
 M = symbols("M")
 
@@ -20,10 +21,6 @@ def init2DArray(columns, rows, content=None):
     for _ in range(rows):
         arr.append([content] * columns)
     return arr
-        
-def print2DArray(mat):
-    for line in mat:
-        print("\t".join(map(str, line)))
 
 def auto_str(cls):
     """
@@ -207,7 +204,7 @@ class Simplex:
             pivot = vis[self.pivot_coords[0]+2][self.pivot_coords[1]+3]
             vis[self.pivot_coords[0]+2][self.pivot_coords[1]+3] = f"{Fore.BLUE}{pivot}{Fore.RESET}"
         
-        print2DArray(vis)
+        print(tabulate.tabulate(vis, tablefmt="simple_grid"))
 
     
     def update(self):
@@ -273,7 +270,7 @@ class Simplex:
         should_continue = True
         table_n = 1
         while should_continue:
-            print(f"Table {table_n} " + "-"*100)
+            print(f"\nTable {table_n}")
             table_n+=1
             should_continue = self.step()
         
