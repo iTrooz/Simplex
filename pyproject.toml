@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "tmp2"
+name = "Simplex"
 version = "0.1.0"
 description = ""
 authors = ["iTrooz"]
