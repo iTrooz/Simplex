@@ -69,6 +69,13 @@ class Simplex:
         # Equations metadata. Will be modified with each iteration
         self.equations: List[EquationMeta] = []
 
+        # Setup the sign for artificial values
+        match self.target_type:
+            case TargetType.MIN:
+                artificial_sign = M
+            case TargetType.MAX:
+                artificial_sign = -M
+
         # setup x variables
         for i, value in enumerate(target):
 
@@ -78,29 +85,44 @@ class Simplex:
                 equ_values.append(equation.coeffs[i])
 
             # create the variable
-            self.variables.append(Variable(name=f"x{i+1}", value=value, equ_values=equ_values))
-        
+            self.variables.append(Variable(name=f"x{i + 1}", value=value, equ_values=equ_values))
+
         # setup equations, and their corresponding A and S variables
         counter = 1
         for i, equation in enumerate(full_equations):
             # create the array representing the A or S variable values
             equ_values = [0] * len(full_equations)
             equ_values[i] = 1
+            match equation.sign:
+                case Sign.GREATER_EQ:
+                    # Create the Excess value
+                    var_name = f"E{counter}"
+                    # Create the corresponding E variable
+                    e_values = equ_values.copy()
+                    e_values[i] = -1
+                    self.variables.append(Variable(name=var_name, value=0, equ_values=e_values))
 
-            if equation.sign == Sign.GREATER_EQ or equation.sign == Sign.EQ:
-                var_name = f"A{counter}"
-                # Create the equation
-                self.equations.append(EquationMeta(vb=var_name, coeff_vb=-M, value=equation.result))
-                # Create the corresponding A variable
-                self.variables.append(Variable(name=var_name, value=-M, equ_values=equ_values))
-                counter+=1
-            elif equation.sign == Sign.SMALLER_EQ:
-                var_name = f"S{counter}"
-                # Create the equation
-                self.equations.append(EquationMeta(vb=var_name, coeff_vb=0, value=equation.result))
-                # Create the corresponding S variable
-                self.variables.append(Variable(name=var_name, value=0, equ_values=equ_values))
-                counter+=1
+                    # Create the artificial value
+                    var_name = f"A{counter}"
+                    # Create the equation
+                    self.equations.append(EquationMeta(vb=var_name, coeff_vb=artificial_sign, value=equation.result))
+                    # Create the corresponding A variable
+                    self.variables.append(Variable(name=var_name, value=artificial_sign, equ_values=equ_values))
+                    counter += 1
+                case Sign.EQ:
+                    var_name = f"A{counter}"
+                    # Create the equation
+                    self.equations.append(EquationMeta(vb=var_name, coeff_vb=artificial_sign, value=equation.result))
+                    # Create the corresponding A variable
+                    self.variables.append(Variable(name=var_name, value=artificial_sign, equ_values=equ_values))
+                    counter += 1
+                case Sign.SMALLER_EQ:
+                    var_name = f"S{counter}"
+                    # Create the equation
+                    self.equations.append(EquationMeta(vb=var_name, coeff_vb=0, value=equation.result))
+                    # Create the corresponding S variable
+                    self.variables.append(Variable(name=var_name, value=0, equ_values=equ_values))
+                    counter += 1
         
         # Name of all variables that has been present at some point. Will not be modified during iteration
         self.variable_names = [variable.name for variable in self.variables]
