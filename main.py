@@ -26,6 +26,9 @@ def print2DArray(mat):
         print("\t".join(map(str, line)))
 
 def auto_str(cls):
+    """
+    From https://stackoverflow.com/a/33800620
+    """
     def __str__(self):
         return '%s(%s)' % (
             type(self).__name__,
