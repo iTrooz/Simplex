@@ -17,7 +17,7 @@ class Sign:
 
 def init2DArray(columns, rows, content=None):
     arr = []
-    for i in range(rows):
+    for _ in range(rows):
         arr.append([content] * columns)
     return arr
         
