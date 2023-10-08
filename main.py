@@ -249,7 +249,7 @@ class Simplex:
     def step(self) -> bool:
         """
         Execute a step (one table) to resole the simplex
-        return True if we shuld continue, False is there is no improvement possible
+        return True if we should continue, False is there is no improvement possible
         """
 
         # condition is a special case for the first iteration
