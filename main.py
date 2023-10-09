@@ -4,6 +4,7 @@ from fractions import Fraction
 from colorama import Fore
 from sympy import symbols, Expr
 import tabulate
+import copy
 
 M = symbols("M")
 
@@ -243,29 +244,29 @@ class Simplex:
                 if variable.name == pivot_equation.vb:
                     self.variables.remove(variable)
                     break
-        
+
+        # Make a deepcopy for the computation of the next table
+        equations_copy = copy.deepcopy(self.equations)
+        variables_copy = copy.deepcopy(self.variables)
+
         # update equation of exit variable
         pivot_equation.vb = pivot_var.name
         pivot_equation.coeff_vb = pivot_var.value
 
-        # update values
-        for equ_n, equation in enumerate(self.equations):
-            # update equation values
-            if equation == pivot_equation:
-                equation.value = Fraction(equation.value, pivot)
+        # Update values
+        for i in range(len(self.equations)):
+            if i == pivot_equation_n:
+                self.equations[i].value = Fraction(self.equations[i].value, pivot)
+                for variable in self.variables:
+                    variable.equ_values[i] = Fraction(variable.equ_values[i], pivot)
             else:
-                product = pivot_equation.value * pivot_var.equ_values[equ_n]
-                equation.value = equation.value - Fraction(product, pivot)
-        
-            # for each equation, update its variables' value
-            for variable in self.variables:
-                if equation == pivot_equation:
-                    variable.equ_values[equ_n] = Fraction(variable.equ_values[equ_n], pivot)
-                else:
-                    product = variable.equ_values[pivot_equation_n] * pivot_var.equ_values[equ_n]
-                    variable.equ_values[equ_n] = variable.equ_values[equ_n] - Fraction(product, pivot)
-        
-
+                prod_1 = equations_copy[i].value * pivot
+                prod_2 = equations_copy[pivot_equation_n].value * variables_copy[pivot_var_n].equ_values[i]
+                self.equations[i].value = Fraction(prod_1 - prod_2, pivot)
+                for j in range(len(self.variables)):
+                    prod_1 = variables_copy[j].equ_values[i] * pivot
+                    prod_2 = variables_copy[pivot_var_n].equ_values[i] * variables_copy[j].equ_values[pivot_equation_n]
+                    self.variables[j].equ_values[i] = Fraction(prod_1 - prod_2, pivot)
 
 
     def step(self) -> bool:
