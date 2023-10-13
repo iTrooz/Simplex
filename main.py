@@ -1,19 +1,19 @@
-from api.simplex import Simplex
+import argparse
 
-from api.simplex.sub_classes import TargetType
-from api.simplex.sub_classes import FullEquation
-from api.simplex.sub_classes import Sign
+from api.simplex.tools import define_simplex_from_cmd
 
-# ------- CONFIG
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Maths project for different computations')
+    parser.add_argument('-c', '--computation', type=str, default='simplex_cmd',
+                        choices=['simplex_cmd'],
+                        help="Type of computation")
+    parser.add_argument('--ui', type=bool, default=False, help='Use the user interface')
 
-target = [5, 2]
-target_type = TargetType.MAX
+    args = parser.parse_args()
 
-full_equations = [
-    FullEquation([3, 4], Sign.SMALLER_EQ, 60),
-    FullEquation([-1, -8], Sign.SMALLER_EQ, 22),
-    FullEquation([-2, 3], Sign.EQ, 43)
-]
-
-s = Simplex(target, target_type, full_equations)
-s.resolve()
+    match args.computation:
+        case "simplex_cmd":
+            define_simplex_from_cmd()
+        case _:
+            print("The computation type selected doesnt exist")
+            
