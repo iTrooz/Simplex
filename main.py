@@ -1,6 +1,6 @@
 import argparse
 
-from api.simplex import Simplex
+from api.simplex.tools import define_simplex_from_cmd
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Maths project for different computations')
@@ -13,6 +13,7 @@ if __name__ == "__main__":
 
     match args.computation:
         case "simplex_cmd":
-            Simplex.define_simplex_from_cmd()
+            define_simplex_from_cmd()
         case _:
             print("The computation type selected doesnt exist")
+            
